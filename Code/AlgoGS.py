@@ -29,8 +29,10 @@ def GsEtu(liste_proposition, liste_reponse, capacite):
             if Etat_proposition[index] == 0:
                 is_find = True
                 choix = index
+                break
             if index == len(liste_proposition) - 1:
                 is_end = True
+                break
             index += 1
         if not (choix == -1):
             for i in range(proposition_arret[choix], len(liste_reponse)):
@@ -43,8 +45,8 @@ def GsEtu(liste_proposition, liste_reponse, capacite):
                     Etat_reponse[choix_reponse] += 1
                     break
                 else:
-                    last_proposition = find_last(res, choix_reponse)
-                    if inferieur(choix, last_proposition, liste_reponse[choix_reponse]):
+                    last_proposition = find_last(res, choix_reponse, liste_reponse)
+                    if inferieur(choix, res[last_proposition][0], liste_reponse[choix_reponse]):
                         Etat_proposition[res[last_proposition][0]] = 0
                         del res[last_proposition]
                         liste_temp = [choix, choix_reponse]
@@ -54,12 +56,18 @@ def GsEtu(liste_proposition, liste_reponse, capacite):
     return res
 
 
-def find_last(liste, val):
-    last_position = -1
+def find_last(liste, val, liste_reponse):
+    list_temp = []
     for i in range(len(liste)):
         if liste[i][1] == val:
-            last_position = i
-
+            list_temp.append([liste[i][0], i])
+    
+    last_position = list_temp[0][1]
+    for j in range(1, len(list_temp)):
+        next_position = list_temp[j][1]
+        if inferieur(liste[last_position][0], liste[next_position][0], liste_reponse[val]):
+            last_position = list_temp[j][1]
+            
     return last_position
 
 
